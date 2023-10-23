@@ -13,7 +13,9 @@ import TextInputt from "../components/textinput";
 const DetailsPage = ({ navigation }) => {
     return (
         <>
-    
+    <View>
+      
+    </View>
         </>
       )
 

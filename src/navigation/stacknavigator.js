@@ -1,8 +1,8 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import React from "react";
 import DetailsPage from "../page/detailspage";
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
  function StackNavigator() {
   return (

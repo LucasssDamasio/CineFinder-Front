@@ -82,8 +82,7 @@ const CinemaPage = ({ navigation }) => {
             data={UpcomingMovies}
             horizontal={true}
             numColunns={3}s
-            renderItem={item =>(  
-              <CardMovie data={item.item}/>  )}  
+            renderItem={renderMoviesItem}   
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={true}
               contentContainerStyle={{
