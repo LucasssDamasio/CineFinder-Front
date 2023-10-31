@@ -4,17 +4,16 @@ import { StyleSheet, Text, View } from 'react-native';
 import Routes from './src/navigation/bottonnavigator';
 import { NavigationContainer} from '@react-navigation/native'
 import StackNavigator from './src/navigation/stacknavigator';
+import { MovieContext } from './src/contexts/MoviesContext';
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Routes>
-      <StackNavigator/>
-      </Routes>
-      
-      
-      
-        
+      <MovieContext.Consumer>
+        {contextValue => (
+          <StackNavigator />
+        )}
+      </MovieContext.Consumer>
     </NavigationContainer>
     
   );

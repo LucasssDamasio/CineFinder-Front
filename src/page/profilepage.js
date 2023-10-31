@@ -8,9 +8,11 @@ import {
   ScrollView,
   FlatList,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useContext} from "react";
 import { api } from "../services/api";
 import CardMovie from "../components/cardmovie";
+import { MovieContext } from "../contexts/MoviesContext";
+
 
 const ProfilePage = ({ navigation }) => {
   const [WatchedMovies, setWatchedMovies] = useState([]);
@@ -18,6 +20,7 @@ const ProfilePage = ({ navigation }) => {
   const [SelectMovies, setSelectMovies] = useState([]);
   const [SimilarMovies, setSimilarMovies] = useState([]);
   const [SimilarMovies2, setSimilarMovies2] = useState([]);
+  const { allFavoriteMovies } = useContext(MovieContext);
 
   useEffect(() => {
     loadWatched();
@@ -32,21 +35,25 @@ const ProfilePage = ({ navigation }) => {
     setWatchedMovies(response.data.results);
   };
   const loadWatchLater = async () => {
-    const response = await api.get("/movie/upcoming");
+    const response = await api.get("/movie/popular");
     setWatchLaterMovies(response.data.results);
   };
   const loadSelect = async () => {
     const response = await api.get("/movie/upcoming");
-    setWatchLaterMovies(response.data.results);
+    setSelectMovies(response.data.results);
   };
   const loadSimilar = async () => {
     const response = await api.get("/movie/upcoming");
-    setWatchLaterMovies(response.data.results);
+    setSimilarMovies(response.data.results);
   };
   const loadSimilar2 = async () => {
     const response = await api.get("/movie/upcoming");
-    setWatchLaterMovies(response.data.results);
+    setSimilarMovies2(response.data.results);
   };
+  
+  const renderMoviesItem = ({item}) =>(
+    <CardMovie data={item} onPress={() => navigation.navigate("DetailsPage",{movieId: item.id})}/>
+  ) 
   return (
     <>
       <ScrollView>
@@ -55,25 +62,43 @@ const ProfilePage = ({ navigation }) => {
 
           <View style={style.header}></View>
 
-          <Text style={style.h1}>SEUS FILMES ASSISTIDOS </Text>
+          <Text style={style.h1}>SEUS FILMES FAVORITIOS </Text>
 
-          <View style={style.lista}>
-          <FlatList
-            data={WatchedMovies}
-            horizontal={true}
-            numColunns={3}
-            style={{gap: 10}}s
-            
-            ItemSeparatorComponent={() => <View style={{width: 10}} />}
-            renderItem={item =>(  
-              <CardMovie data={item.item}/>  )}  
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={true}
-              contentContainerStyle={{
-                padding:10,
-              }}
-            />
-          </View>
+          
+         
+          {allFavoriteMovies.length > 0 && (
+        <ScrollView style={style.contentMyList}>
+          {allFavoriteMovies.map((movie) => (
+            <TouchableOpacity
+              onPress={() => navigate("Details", { movieId: movie.id })}
+              key={movie.id}
+              style={style.card}
+            >
+              <Image
+                style={style.cardImage}
+                source={{
+                  uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+                }}
+              />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
+      {allFavoriteMovies.length <= 0 && (
+       <Text style={style.h1}> voce ainda não adicionou nenhum filme ao favorito </Text>
+      )}
+    
+  
+
+
+
+
+
+
+
+
+
+        
 
           <Text style={style.h1}>ASSISTIR MAIS TARDE</Text>
 
@@ -83,8 +108,7 @@ const ProfilePage = ({ navigation }) => {
             data={WatchLaterMovies}
             horizontal={true}
             numColunns={3}s
-            renderItem={item =>(  
-              <CardMovie data={item.item}/>  )}  
+            renderItem={renderMoviesItem} 
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={true}
               contentContainerStyle={{
@@ -101,8 +125,7 @@ const ProfilePage = ({ navigation }) => {
             data={SelectMovies}
             horizontal={true}
             numColunns={3}s
-            renderItem={item =>(  
-              <CardMovie data={item.item}/>  )}  
+            renderItem={renderMoviesItem} 
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={true}
               contentContainerStyle={{
@@ -110,8 +133,6 @@ const ProfilePage = ({ navigation }) => {
                 paddingBottom: 100,
               }}
             />
-
-
           </View>
 
           <Text style={style.h1}> JA QUE GOSTOU DE X, QUE TAL:</Text>
@@ -122,8 +143,7 @@ const ProfilePage = ({ navigation }) => {
             data={SimilarMovies}
             horizontal={true}
             numColunns={3}s
-            renderItem={item =>(  
-              <CardMovie data={item.item}/>  )}  
+            renderItem={renderMoviesItem}
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={true}
               contentContainerStyle={{
@@ -152,8 +172,9 @@ const ProfilePage = ({ navigation }) => {
             />
 
           </View>
-        </View>
+          </View>
       </ScrollView>
+      
     </>
   );
 };
@@ -178,6 +199,25 @@ const style = StyleSheet.create({
   lista: {
     width: "100%",
   },
+  contentMyList: {
+    width: "100%",
+    padding: 20,
+    gap: 25,
+    marginBottom: 25,
+  },
+  card: {
+    width: 250,
+    marginBottom: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
+  },
+  cardImage: {
+    width: 110,
+    height: 160,
+    borderRadius: 16,
+  },
+ 
   
 });
 

@@ -26,8 +26,7 @@ const style = StyleSheet.create({
       
       fontSize: 25,
       color:'#FFFFFF',
-      //textStrokeWidth:2,
-     // textStrokeColor: '#000000'
+     
        
     
     },
