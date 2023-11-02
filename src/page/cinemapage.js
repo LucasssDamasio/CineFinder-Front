@@ -65,17 +65,14 @@ const CinemaPage = ({ navigation }) => {
             
             ItemSeparatorComponent={() => <View style={{width: 10}} />}
             renderItem={renderMoviesItem}  
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={true}
+             
+              
               contentContainerStyle={{
                 padding:10,
               }}
             />
              
           </View>
-
-         
-
           <View style={style.lista}>
           <Text style={style.h1}>EM BREVE NOS CINEMAS</Text>
           <FlatList
@@ -83,8 +80,6 @@ const CinemaPage = ({ navigation }) => {
             horizontal={true}
             numColunns={3}s
             renderItem={renderMoviesItem}   
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={true}
               contentContainerStyle={{
                 padding:35,
                 paddingBottom: 100,

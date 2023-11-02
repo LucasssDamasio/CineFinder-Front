@@ -5,19 +5,25 @@ import {
   useMemo,
   useState,
 } from "react";
+import { api } from "../services/api";
 
-import api from "../services/api";
 
 export const MovieContext = createContext({
   favoriteMovies: [],
   allFavoriteMovies: [],
   addFavoriteMovie: () => {},
   removeFavoriteMovie: () => {},
+  laterMovies: [],
+  allLaterMovies: [],
+  addLaterMovie: () => {},
+  removeLaterMovie: () => {},
 });
 
 export const MovieProvider = ({ children }) => {
   const [favoriteMovies, setFavoriteMovies] = useState([]);
   const [allFavoriteMovies, setAllFavoriteMovies] = useState([]);
+  const [laterMovies, setLaterMovies] = useState([]);
+  const [allLaterMovies, setAllLaterMovies] = useState([]);
 
   useEffect(() => {
     async function loadFavoriteMovies() {
@@ -26,7 +32,15 @@ export const MovieProvider = ({ children }) => {
         setFavoriteMovies(JSON.parse(favoriteMovies));
       }
     }
+
+    async function loadLaterMovies() {
+      const laterMovies = await AsyncStorage.getItem("@LaterMovies");
+      if (laterMovies) {
+        setLaterMovies(JSON.parse(laterMovies));
+      }
+    }
     loadFavoriteMovies();
+    loadLaterMovies();
   }, []);
 
   const addFavoriteMovie = async (movieId) => {
@@ -40,6 +54,17 @@ export const MovieProvider = ({ children }) => {
     }
   };
 
+  const addLaterMovie = async (movieId) => {
+    if (!laterMovies.includes(movieId)) {
+      const newLaterMovies = [...laterMovies, movieId];
+      setLaterMovies(newLaterMovies);
+      await AsyncStorage.setItem(
+        "@LaterMovies",
+        JSON.stringify(newLaterMovies)
+      );
+    }
+  };
+
   const removeFavoriteMovie = async (movieId) => {
     const newFavoriteMovies = favoriteMovies.filter((id) => id !== movieId);
     setFavoriteMovies(newFavoriteMovies);
@@ -49,9 +74,20 @@ export const MovieProvider = ({ children }) => {
     );
   };
 
+  const removeLaterMovie = async (movieId) => {
+    const newLaterMovies = laterMovies.filter((id) => id !== movieId);
+    setLaterMovies(newLaterMovies);
+    await AsyncStorage.setItem(
+      "@LaterMovies",
+      JSON.stringify(newLaterMovies)
+    );
+  };
+
   const parsedFavoriteMovies = useMemo(() => favoriteMovies, [favoriteMovies]);
+  const parsedLaterMovies = useMemo(() => laterMovies, [laterMovies]);
 
   const getAllFavoriteMovies = async () => {
+
     try {
       const movies = await Promise.all(
         parsedFavoriteMovies.map(async (movieId) => {
@@ -61,19 +97,39 @@ export const MovieProvider = ({ children }) => {
       );
       setAllFavoriteMovies(movies);
     } catch (error) {
-      console.log(error);
+      
+    }
+  };
+
+  const getAllLaterMovies = async () => {
+
+    try {
+      const movies = await Promise.all(
+        parsedLaterMovies.map(async (movieId) => {
+          const response = await api.get(`/movie/${movieId}`);
+          return response.data;
+        })
+      );
+      setAllLaterMovies(movies);
+    } catch (error) {
+      
     }
   };
 
   useEffect(() => {
     getAllFavoriteMovies();
-  }, [parsedFavoriteMovies, getAllFavoriteMovies]);
+    getAllLaterMovies();
+  }, [parsedFavoriteMovies, getAllFavoriteMovies, parsedLaterMovies,getAllLaterMovies]);
 
   const contextData = {
     favoriteMovies: parsedFavoriteMovies,
     allFavoriteMovies,
     addFavoriteMovie,
     removeFavoriteMovie,
+    laterMovies: parsedLaterMovies,
+    allLaterMovies,
+    addLaterMovie,
+    removeLaterMovie,
   };
 
   return (

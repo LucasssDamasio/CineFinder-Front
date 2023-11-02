@@ -28,9 +28,9 @@ function Routes() {
         headerShown: false,
         tabBarIcon: ({ color, size, focused}) => {
           if(focused){
-            return <Ionicons name="tablet-landscape" size={50} color={color}/>
+            return <Ionicons name="film" size={50} color={color}/>
           }
-          return <Ionicons name="tablet-landscape-outline" size={50} color={color}/>
+          return <Ionicons name="film-outline" size={50} color={color}/>
 
         }
        }}

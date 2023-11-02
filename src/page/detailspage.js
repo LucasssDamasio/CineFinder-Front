@@ -19,7 +19,7 @@ const DetailsPage = ({ navigation }) => {
   const [movieDetails, setMovieDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [cast, setCast] = useState([]);
-  const { addFavoriteMovie, removeFavoriteMovie, favoriteMovies } =  useContext(MovieContext);
+  const { addFavoriteMovie, removeFavoriteMovie, favoriteMovies,addLaterMovie, removeLaterMovie, laterMovies } =  useContext(MovieContext);
 
   const route = useRoute();
   const { movieId } = route.params || {};
@@ -73,6 +73,21 @@ const DetailsPage = ({ navigation }) => {
           }}>
             <Ionicons
             name={favoriteMovies.includes(movieId) ? "bookmark" : "bookmark-outline"}
+             // name="bookmark-outline"
+              color="#FF1607"
+              size={32}
+             //weight={favoriteMovies.includes(movieId) ? "fill" : "light"}
+            ></Ionicons>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+          onPress={() => {
+            laterMovies.includes(movieId)
+             ? removeLaterMovie(movieDetails.id)
+             : addLaterMovie(movieDetails.id);
+          }}>
+            <Ionicons
+            name={favoriteMovies.includes(movieId) ? "time" : "time-outline"}
              // name="bookmark-outline"
               color="#FF1607"
               size={32}

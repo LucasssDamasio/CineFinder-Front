@@ -10,14 +10,8 @@ import {
 import Button from "../components/button";
 import TextInputt from "../components/textinput";
 
-const HomePage = ({ navigation }) => {
+const FilterPage = ({ navigation }) => {
   
-  const BuscaAleatorio = () => {
-    const randomMovieId = Math.floor(Math.random() * 100000) + 1;
-
-    navigation.navigate("DetailsPage", { movieId: randomMovieId });
-  };
-
 
   return (
     <>
@@ -27,19 +21,18 @@ const HomePage = ({ navigation }) => {
           source={require("../../assets/clapper.png")}
           style={style.clapperboard}
         />
-        <TextInputt
-          style={style.pesquisa}
-          placeholder={"Buscando Algum Filme?"}
-        ></TextInputt>
+        <Text style={style.h1}>Quer predefinir alguns filtros?</Text>
         <View style={style.opcoes}>
-          <Button title="Buscar Filme" onPress={() => navigation.navigate("FilterPage")}></Button>
+         
 
-          <Button title="Titulo Aleatorio" onPress={BuscaAleatorio}></Button>
 
-          <Button title="Buscar Serie" onPress={() => navigation.navigate("FilterPage")}></Button>
+        
         </View>
 
-        <View style={style.footer}></View>
+        <View style={style.footer}>
+
+        <Button title="Não" onPress={() => navigation.navigate("QuestionPage")}></Button>
+        </View>
       </View>
     </>
   );
@@ -57,6 +50,7 @@ const style = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     justifyContent: "space-around",
+    
   },
   clapperboard: {
     width: 150,
@@ -73,4 +67,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default HomePage;
+export default FilterPage;

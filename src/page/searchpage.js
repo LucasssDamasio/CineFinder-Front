@@ -12,12 +12,6 @@ import TextInputt from "../components/textinput";
 
 const HomePage = ({ navigation }) => {
   
-  const BuscaAleatorio = () => {
-    const randomMovieId = Math.floor(Math.random() * 100000) + 1;
-
-    navigation.navigate("DetailsPage", { movieId: randomMovieId });
-  };
-
 
   return (
     <>
@@ -31,13 +25,6 @@ const HomePage = ({ navigation }) => {
           style={style.pesquisa}
           placeholder={"Buscando Algum Filme?"}
         ></TextInputt>
-        <View style={style.opcoes}>
-          <Button title="Buscar Filme" onPress={() => navigation.navigate("FilterPage")}></Button>
-
-          <Button title="Titulo Aleatorio" onPress={BuscaAleatorio}></Button>
-
-          <Button title="Buscar Serie" onPress={() => navigation.navigate("FilterPage")}></Button>
-        </View>
 
         <View style={style.footer}></View>
       </View>
