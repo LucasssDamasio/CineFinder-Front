@@ -119,7 +119,7 @@ export const MovieProvider = ({ children }) => {
   useEffect(() => {
     getAllFavoriteMovies();
     getAllLaterMovies();
-  }, [parsedFavoriteMovies, getAllFavoriteMovies, parsedLaterMovies,getAllLaterMovies]);
+  }, [parsedFavoriteMovies, parsedLaterMovies]);
 
   const contextData = {
     favoriteMovies: parsedFavoriteMovies,

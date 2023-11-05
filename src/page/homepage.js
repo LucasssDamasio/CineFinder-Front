@@ -1,4 +1,4 @@
-import React from "react";
+
 import {
   View,
   Text,
@@ -9,15 +9,27 @@ import {
 } from "react-native";
 import Button from "../components/button";
 import TextInputt from "../components/textinput";
+import React, { useEffect, useState } from "react";
+import { api } from "../services/api";
+import CardMovie from "../components/cardmovie";
+import { Search } from "../components/searchbar";
 
 const HomePage = ({ navigation }) => {
+  const [discoverMovies, setDiscoverMovies] = useState([]);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [noResults, setNoResults] = useState(false);
+  
+
   
   const BuscaAleatorio = () => {
-    const randomMovieId = Math.floor(Math.random() * 100000) + 1;
+    const randomMovieId = Math.floor(Math.random() * 10000) + 1;
 
     navigation.navigate("DetailsPage", { movieId: randomMovieId });
   };
-
+  
 
   return (
     <>
@@ -27,16 +39,11 @@ const HomePage = ({ navigation }) => {
           source={require("../../assets/clapper.png")}
           style={style.clapperboard}
         />
-        <TextInputt
-          style={style.pesquisa}
-          placeholder={"Buscando Algum Filme?"}
-        ></TextInputt>
+        <Search></Search>
         <View style={style.opcoes}>
-          <Button title="Buscar Filme" onPress={() => navigation.navigate("FilterPage")}></Button>
 
           <Button title="Titulo Aleatorio" onPress={BuscaAleatorio}></Button>
 
-          <Button title="Buscar Serie" onPress={() => navigation.navigate("FilterPage")}></Button>
         </View>
 
         <View style={style.footer}></View>

@@ -18,28 +18,24 @@ const ProfilePage = ({ navigation }) => {
   const [SimilarMovies2, setSimilarMovies2] = useState([]);
   const { allFavoriteMovies, allLaterMovies } = useContext(MovieContext);
 
-  useEffect(() => {
-    console.log(allFavoriteMovies);
-  }, [allFavoriteMovies]);
+  useEffect(() => {}, [allFavoriteMovies, allLaterMovies]);
 
   useEffect(() => {
-    loadWatched();
-    loadWatchLater();
     loadSelect();
     loadSimilar();
     loadSimilar2();
   }, []);
 
   const loadSelect = async () => {
-    const response = await api.get("/movie/upcoming");
+    const response = await api.get("/movie/popular");
     setSelectMovies(response.data.results);
   };
   const loadSimilar = async () => {
-    const response = await api.get("/movie/upcoming");
+    const response = await api.get("/movie/popular");
     setSimilarMovies(response.data.results);
   };
   const loadSimilar2 = async () => {
-    const response = await api.get("/movie/upcoming");
+    const response = await api.get("/movie/popular");
     setSimilarMovies2(response.data.results);
   };
 
@@ -60,22 +56,28 @@ const ProfilePage = ({ navigation }) => {
           <Text style={style.h1}>SEUS FILMES FAVORITIOS </Text>
 
           {allFavoriteMovies.length > 0 && (
-            <FlatList style={style.contentMyList}>
-              {allFavoriteMovies.map((movie, index) => (
-                <TouchableOpacity
-                  onPress={() => navigate("Details", { movieId: movie.id })}
-                  key={index}
-                  style={style.card}
-                >
-                  <Image
-                    style={style.cardImage}
-                    source={{
-                      uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-                    }}
-                  />
-                </TouchableOpacity>
-              ))}
-            </FlatList>
+            <View style={style.lista}>
+              <FlatList
+                horizontal
+                data={allFavoriteMovies}
+                renderItem={({ item, index }) => (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("DetailsPage", { movieId: item.id })
+                    }
+                    key={index}
+                    style={style.card}
+                  >
+                    <Image
+                      style={style.cardImage}
+                      source={{
+                        uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+                      }}
+                    />
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
           )}
           {allFavoriteMovies.length <= 0 && (
             <Text style={style.h1}>
@@ -87,22 +89,28 @@ const ProfilePage = ({ navigation }) => {
           <Text style={style.h1}>ASSISTIR MAIS TARDE</Text>
 
           {allLaterMovies.length > 0 && (
-            <FlatList style={style.contentMyList}>
-              {allLaterMovies.map((movie, index) => (
-                <TouchableOpacity
-                  onPress={() => navigate("Details", { movieId: movie.id })}
-                  key={index}
-                  style={style.card}
-                >
-                  <Image
-                    style={style.cardImage}
-                    source={{
-                      uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-                    }}
-                  />
-                </TouchableOpacity>
-              ))}
-            </FlatList>
+             <View style={style.lista}>
+             <FlatList
+               horizontal
+               data={allLaterMovies}
+               renderItem={({ item, index }) => (
+                 <TouchableOpacity
+                   onPress={() =>
+                     navigation.navigate("DetailsPage", { movieId: item.id })
+                   }
+                   key={index}
+                   style={style.card}
+                 >
+                   <Image
+                     style={style.cardImage}
+                     source={{
+                       uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+                     }}
+                   />
+                 </TouchableOpacity>
+               )}
+             />
+           </View>
           )}
           {allLaterMovies.length <= 0 && (
             <Text style={style.h1}>
@@ -202,9 +210,10 @@ const style = StyleSheet.create({
     gap: 15,
   },
   cardImage: {
-    width: 110,
-    height: 160,
-    borderRadius: 16,
+    width:100,
+      height:145,
+      borderRadius:15,
+      backgroundColor: "#424242"
   },
 });
 
