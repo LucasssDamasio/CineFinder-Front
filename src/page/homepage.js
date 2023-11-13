@@ -63,7 +63,8 @@ const style = StyleSheet.create({
     flex: 10,
     padding: 20,
     alignItems: "center",
-    justifyContent: "space-around",
+    gap:10,
+    justifyContent:"space-between",
   },
   clapperboard: {
     width: 150,
@@ -71,7 +72,6 @@ const style = StyleSheet.create({
   },
   opcoes: {
     width: "100%",
-    gap: 10,
     alignItems: "center"
   },
   pesquisa: {

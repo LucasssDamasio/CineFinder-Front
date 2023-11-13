@@ -11,12 +11,14 @@ import React, { useEffect, useState, useContext } from "react";
 import { api } from "../services/api";
 import CardMovie from "../components/cardmovie";
 import { MovieContext } from "../contexts/MoviesContext";
+import { getSuggestions } from "../services/apiRest";
 
 const ProfilePage = ({ navigation }) => {
   const [SelectMovies, setSelectMovies] = useState([]);
   const [SimilarMovies, setSimilarMovies] = useState([]);
   const [SimilarMovies2, setSimilarMovies2] = useState([]);
   const { allFavoriteMovies, allLaterMovies } = useContext(MovieContext);
+  const [SuggestedMovies, setSuggestedMovies] = useState([]);
 
   useEffect(() => {}, [allFavoriteMovies, allLaterMovies]);
 
@@ -24,6 +26,7 @@ const ProfilePage = ({ navigation }) => {
     loadSelect();
     loadSimilar();
     loadSimilar2();
+    loadSuggestions();
   }, []);
 
   const loadSelect = async () => {
@@ -38,6 +41,20 @@ const ProfilePage = ({ navigation }) => {
     const response = await api.get("/movie/popular");
     setSimilarMovies2(response.data.results);
   };
+  const loadSuggestions = async () => {
+    try {
+        
+        const response = await axios.post(`${url}/suggestion/`, {
+            name: "Nome do Filme", // Tem que mexer aqui 
+        });
+
+    
+        const suggestions = response.data.suggestions;
+        setSuggestedMovies(suggestions);
+    } catch (error) {
+        console.error("Error fetching movie suggestions:", error);
+    }
+};
 
   const renderMoviesItem = ({ item }) => (
     <CardMovie
@@ -45,6 +62,7 @@ const ProfilePage = ({ navigation }) => {
       onPress={() => navigation.navigate("DetailsPage", { movieId: item.id })}
     />
   );
+ 
   return (
     <>
       <ScrollView>
@@ -136,40 +154,69 @@ const ProfilePage = ({ navigation }) => {
             />
           </View>
 
-          <Text style={style.h1}> JA QUE GOSTOU DE X, QUE TAL:</Text>
+<Text style={style.h1}>SE VOCÊ ASSISTIU A X , VEJA ISSO:</Text>
+{SuggestedMovies.length > 0 && (
+  <View style={style.lista}>
+    <FlatList
+      horizontal
+      data={SuggestedMovies}
+      renderItem={({ item, index }) => (
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("DetailsPage", { movieId: item.id })
+          }
+          key={index}
+          style={style.card}
+        >
+          <Image
+            style={style.cardImage}
+            source={{
+              uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+            }}
+          />
+        </TouchableOpacity>
+      )}
+    />
+  </View>
+)}
+{SuggestedMovies.length <= 0 && (
+  <Text style={style.h1}>
+    {" "}
+    Não temos sugestões para você no momento. Assista mais filmes para receber recomendações!{" "}
+  </Text>
+)}
 
-          <View style={style.lista}>
-            <FlatList
-              data={SimilarMovies}
-              horizontal={true}
-              numColunns={3}
-              s
-              renderItem={renderMoviesItem}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={true}
-              contentContainerStyle={{
-                padding: 35,
-                paddingBottom: 100,
-              }}
-            />
-          </View>
-
-          <Text style={style.h1}> JA QUE GOSTOU DE X, QUE TAL:</Text>
-          <View style={style.lista}>
-            <FlatList
-              data={SimilarMovies2}
-              horizontal={true}
-              numColunns={3}
-              s
-              renderItem={(item) => <CardMovie data={item.item} />}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={true}
-              contentContainerStyle={{
-                padding: 35,
-                paddingBottom: 100,
-              }}
-            />
-          </View>
+<Text style={style.h1}>SE VOCÊ ASSISTIU A Y , VEJA ISSO:</Text>
+{SuggestedMovies.length > 0 && (
+  <View style={style.lista}>
+    <FlatList
+      horizontal
+      data={SuggestedMovies}
+      renderItem={({ item, index }) => (
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("DetailsPage", { movieId: item.id })
+          }
+          key={index}
+          style={style.card}
+        >
+          <Image
+            style={style.cardImage}
+            source={{
+              uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+            }}
+          />
+        </TouchableOpacity>
+      )}
+    />
+  </View>
+)}
+{SuggestedMovies.length <= 0 && (
+  <Text style={style.h1}>
+    {" "}
+    Não temos sugestões para você no momento. Assista mais filmes para receber recomendações!{" "}
+  </Text>
+)}
         </View>
       </ScrollView>
     </>
@@ -203,7 +250,7 @@ const style = StyleSheet.create({
     marginBottom: 25,
   },
   card: {
-    width: 250,
+    
     marginBottom: 20,
     flexDirection: "row",
     alignItems: "center",

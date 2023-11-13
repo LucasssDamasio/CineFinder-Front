@@ -36,10 +36,10 @@ export function Search() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.containerInput}>
+    <View style={style.container}>
+      <View style={style.containerInput}>
         <TextInput
-          style={styles.input}
+          style={style.input}
           placeholder="Buscar"
           placeholderTextColor="#fff"
           onChangeText={handleSearch}
@@ -47,19 +47,20 @@ export function Search() {
         />
       </View>
 
-      <FlatList
+  <View style={style.lista}>
+  <FlatList
         data={searchResults}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.card}
+            style={style.card}
             key={item.id}
             onPress={() => navigate("DetailsPage", { movieId: item.id })}
           >
             <Image
-              style={styles.cardImage}
+              style={style.cardImage}
               source={{
                 uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
               }}
@@ -67,14 +68,13 @@ export function Search() {
           </TouchableOpacity>
         )}
       />
+  </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const style = StyleSheet.create({
   container: {
-    flex: 1,
-  padding: 20,
   alignItems: "center",
   justifyContent: "center",
   width: "100%",
@@ -96,12 +96,19 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   card: {
-    width: 150,
-    marginLeft: 10,
+    width:100,
+      height:145,
   },
   cardImage: {
-    width: 150,
-    height: 220,
-    borderRadius: 16,
+    width:100,
+      height:145,
+      borderRadius:15,
+      backgroundColor: "#424242"
+  },
+  lista: {
+    width: "100%",
+    height: 145,
+    
+
   },
 });
