@@ -33,28 +33,42 @@ const ProfilePage = ({ navigation }) => {
     const response = await api.get("/movie/popular");
     setSelectMovies(response.data.results);
   };
+
   const loadSimilar = async () => {
     const response = await api.get("/movie/popular");
     setSimilarMovies(response.data.results);
   };
+
   const loadSimilar2 = async () => {
     const response = await api.get("/movie/popular");
     setSimilarMovies2(response.data.results);
   };
+  let randomFavoriteMovie
   const loadSuggestions = async () => {
-    try {
-        
-        const response = await axios.post(`${url}/suggestion/`, {
-            name: "Nome do Filme", // Tem que mexer aqui 
-        });
-
     
-        const suggestions = response.data.suggestions;
-        setSuggestedMovies(suggestions);
+    try {
+      // Verifique se há filmes favoritos disponíveis
+      if (allFavoriteMovies.length > 0) {
+        // Obtenha um filme aleatório do array de filmes favoritos
+        const randomFavoritMovieIndex = Math.floor(Math.random() * allFavoriteMovies.length);
+         randomFavoriteMovie = allFavoriteMovies[randomFavoritMovieIndex];
+  
+        // Verifique se o filme aleatório é definido antes de acessar a propriedade 'title'
+        if (randomFavoriteMovie && randomFavoriteMovie.original_title) {
+          // Chame a função getSuggestions com o título do filme aleatório
+          const suggestions = await getSuggestions(randomFavoriteMovie.original_title);
+  
+          // Atualize o estado com as sugestões
+          setSuggestedMovies(suggestions);
+        }
+      } else {
+        console.warn("Não há filmes favoritos disponíveis para gerar sugestões.");
+      }
     } catch (error) {
-        console.error("Error fetching movie suggestions:", error);
+      console.error("Erro ao buscar sugestões de filmes:", error);
     }
-};
+  };
+  
 
   const renderMoviesItem = ({ item }) => (
     <CardMovie
@@ -62,6 +76,7 @@ const ProfilePage = ({ navigation }) => {
       onPress={() => navigation.navigate("DetailsPage", { movieId: item.id })}
     />
   );
+
  
   return (
     <>
@@ -154,7 +169,7 @@ const ProfilePage = ({ navigation }) => {
             />
           </View>
 
-<Text style={style.h1}>SE VOCÊ ASSISTIU A X , VEJA ISSO:</Text>
+<Text style={style.h1}>SE VOCÊ ASSISTIU A,{randomFavoriteMovie} , VEJA ISSO:</Text>
 {SuggestedMovies.length > 0 && (
   <View style={style.lista}>
     <FlatList
@@ -179,12 +194,7 @@ const ProfilePage = ({ navigation }) => {
     />
   </View>
 )}
-{SuggestedMovies.length <= 0 && (
-  <Text style={style.h1}>
-    {" "}
-    Não temos sugestões para você no momento. Assista mais filmes para receber recomendações!{" "}
-  </Text>
-)}
+
 
 <Text style={style.h1}>SE VOCÊ ASSISTIU A Y , VEJA ISSO:</Text>
 {SuggestedMovies.length > 0 && (
